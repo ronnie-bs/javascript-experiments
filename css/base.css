@@ -1,5 +1,5 @@
 /********************************
- ** FILE: base.css
+ * FILE: base.css
  ********************************/
 /* Structure */
 
@@ -16,14 +16,11 @@
     -ms-transition: height ease-in-out 1s;
 }
 
-
 #nytg-chart {
     position: relative;
     width: 100%;
     height: 100%;
 }
-
-#nytg-error {}
 
 #nytg-error p {
     text-align: center;
@@ -52,7 +49,6 @@
 #nytg-chartCanvas svg {
     height: 100%;
     overflow: hidden;
-    config/ assets.yml settings.yml
 }
 
 #nytg-tooltipContainer {
@@ -166,9 +162,6 @@
     width: 950px;
 }
 
-
-.nytg-navigation {}
-
 .nytg-navigation li {
     color: #999;
     font-size: 14px;
@@ -198,6 +191,7 @@
     border-color: #AAA;
     box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
+
 /*Category List*/
 
 #nytg-categoryBrowser li {
@@ -212,6 +206,7 @@
 #nytg-categoryBrowser li:hover {
     background-color: #f3f3f3;
 }
+
 /* Scoop Fixes */
 
 span.noWrap.feedback {
@@ -234,7 +229,6 @@ div.storyHeader h1 {
 .ledeStory div.storySummary .summary {
     line-height: 25px;
     font-size: 15px;
-    /*  display: none;*/
 }
 
 .ledeStory .insetHFullWidth .storyHeader .dateline {

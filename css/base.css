@@ -9,6 +9,7 @@
     -moz-transition: height ease-in-out 1s;
     -o-transition: height ease-in-out 1s;
     -ms-transition: height ease-in-out 1s;
+    transition: height ease-in-out 1s;
 }
 
 #nytg-chart {

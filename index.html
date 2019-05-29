@@ -7,14 +7,15 @@
     <link rel="stylesheet" type="text/css" href="css/overlay.css">
     <link rel="stylesheet" type="text/css" href="css/color_key.css">
 
-    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="lib/d3.js"></script>
     <script type="text/javascript" src="lib/d3.geom.js"></script>
     <script type="text/javascript" src="lib/d3.layout.js"></script>
     <script type="text/javascript" charset="utf-8">
+        var nytg = nytg || {};
+
         jQuery.noConflict();
         var $j = jQuery;
-        var nytg = nytg || {};
 
         $j.getJSON('data/budget.json', function(data) {
             nytg.budget_array_data = data;

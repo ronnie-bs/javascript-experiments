@@ -1,7 +1,3 @@
-/********************************
- ** FILE: lib/nytg.js
-    ********************************/
-
 var nytg = nytg || {};
 
 nytg.formatNumber = function(n, decimals) {
@@ -29,7 +25,6 @@ nytg.formatNumber = function(n, decimals) {
         decimals = 1
     }
 
-
     prefix = ""
     if (decimals > 0) {
         if (n < 1) {
@@ -43,7 +38,6 @@ nytg.formatNumber = function(n, decimals) {
             remainder = s.substr(s.length - (decimals), decimals);
             num = s.substr(0, s.length - decimals);
         }
-
 
         return negativePrefix + prefix + num.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + "." + remainder + suffix + negativeSuffix;
     } else {

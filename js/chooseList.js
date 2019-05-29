@@ -1,7 +1,3 @@
-/********************************
- ** FILE: ChooseList.js
-    ********************************/
-
 var nytg = nytg || {};
 var $j = jQuery;
 
@@ -20,11 +16,9 @@ nytg.ChooseList.prototype.onClickHandler = function(evt) {
     this.selectByElement(evt.currentTarget);
 };
 
-
 nytg.ChooseList.prototype.selectByIndex = function(i) {
     this.selectByElement(this.elements[i])
 };
-
 
 nytg.ChooseList.prototype.selectByElement = function(el) {
     if (this.selectedNode) {

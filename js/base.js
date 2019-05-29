@@ -1,7 +1,3 @@
-/********************************
- ** FILE: base.js
-    ********************************/
-
 var $j = jQuery;
 
 nytg.filename = function(index) {
@@ -22,10 +18,7 @@ $j("#save").click(function() {
             'contents': nytg.c.getCirclePositions()
         }
     });
-
 })
-
-
 
 nytg.ready = function() {
     var that = this;
@@ -34,24 +27,6 @@ nytg.ready = function() {
     nytg.c.start();
 
     this.highlightedItems = [];
-
-    // nytg.s = new nytg.SearchBox("nytg-search", nytg.budget_array_data, "name", "department", "budget_2012", "id");
-    // nytg.s.findCallback = function(evt){
-    //   var foundId = evt.id;
-    //
-    //   for (var i=0; i < that.highlightedItems.length; i++) {
-    //     $j("#nytg-circle"+that.highlightedItems[i]).css({'stroke-width':1});
-    //   };
-    //
-    //   that.highlightedItems = [evt.id];
-    //   for (var i=0; i < that.highlightedItems.length; i++) {
-    //     $j("#nytg-circle"+that.highlightedItems[i]).css({'stroke-width':20});
-    //   };
-    //
-    // }
-
-
-
 
     var currentOverlay = undefined;
     nytg.mainNav = new nytg.ChooseList($j(".nytg-navigation"), onMainChange);
@@ -97,7 +72,6 @@ nytg.ready = function() {
                 'height': 850
             });
         }
-
     }
 }
 

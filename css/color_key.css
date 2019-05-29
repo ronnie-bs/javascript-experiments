@@ -1,7 +1,3 @@
-/********************************
- ** FILE: color_key.css
- ********************************/
-
 .change-decrease3 {
     background-color: #d84b2a;
 }
@@ -29,6 +25,7 @@
 .change-increase3 {
     background-color: #7aa25c;
 }
+
 /*text color for changes*/
 
 .change-decrease3 span.label {

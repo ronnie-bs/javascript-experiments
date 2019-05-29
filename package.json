@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "d3": "^5.9.2",
     "jquery": "^3.4.1"
   },
   "devDependencies": {

@@ -58,8 +58,8 @@ nytg.Chart = function() {
                 return 3;
             }
         },
-        fillColor: d3.scale.ordinal().domain([-3, -2, -1, 0, 1, 2, 3]).range(["#d84b2a", "#ee9586", "#e4b7b2", "#AAA", "#beccae", "#9caf84", "#7aa25c"]),
-        strokeColor: d3.scale.ordinal().domain([-3, -2, -1, 0, 1, 2, 3]).range(["#c72d0a", "#e67761", "#d9a097", "#999", "#a7bb8f", "#7e965d", "#5a8731"]),
+        fillColor: d3.scaleOrdinal().domain([-3, -2, -1, 0, 1, 2, 3]).range(["#d84b2a", "#ee9586", "#e4b7b2", "#AAA", "#beccae", "#9caf84", "#7aa25c"]),
+        strokeColor: d3.scaleOrdinal().domain([-3, -2, -1, 0, 1, 2, 3]).range(["#c72d0a", "#e67761", "#d9a097", "#999", "#a7bb8f", "#7e965d", "#5a8731"]),
         getFillColor: null,
         getStrokeColor: null,
         pFormat: d3.format("+.1%"),
@@ -84,10 +84,10 @@ nytg.Chart = function() {
             }
         },
 
-        rScale: d3.scale.pow().exponent(0.5).domain([0, 1000000000]).range([1, 90]),
+        rScale: d3.scalePow().exponent(0.5).domain([0, 1000000000]).range([1, 90]),
         radiusScale: null,
-        changeScale: d3.scale.linear().domain([-0.28, 0.28]).range([620, 180]).clamp(true),
-        sizeScale: d3.scale.linear().domain([0, 110]).range([0, 1]),
+        changeScale: d3.scaleLinear().domain([-0.28, 0.28]).range([620, 180]).clamp(true),
+        sizeScale: d3.scaleLinear().domain([0, 110]).range([0, 1]),
         groupScale: {},
 
         //data settings
@@ -181,7 +181,8 @@ nytg.Chart = function() {
                 }
             };
 
-            this.groupScale = d3.scale.ordinal().domain(this.categoriesList).rangePoints([0, 1]);
+            // this.groupScale = d3.scaleOrdinal().domain(this.categoriesList).rangePoints([0, 1]);
+            this.groupScale = d3.scalePoint().domain(this.categoriesList).range([0, 1]);
 
             // Builds the nodes data array from the original data
             for (var i = 0; i < this.data.length; i++) {
@@ -379,9 +380,17 @@ nytg.Chart = function() {
         start: function() {
             var that = this;
 
-            this.force = d3.layout.force()
-                .nodes(this.nodes)
-                .size([this.width, this.height])
+            // this.force = d3.layout.force()
+            //     .nodes(this.nodes)
+            //     .size([this.width, this.height]);
+
+            const forceX = d3.forceX(this.width / 2).strength(0.015);
+            const forceY = d3.forceY(this.height / 2).strength(0.015);
+            this.force = d3.forceSimulation()
+                .force('x', forceX)
+                .force('y',  forceY)
+                .force('charge', this.defaultCharge)
+                .force('friction', 0.9);
         },
 
         //
@@ -390,9 +399,9 @@ nytg.Chart = function() {
         totalLayout: function() {
             var that = this;
             this.force
-                .gravity(-0.01)
-                .charge(that.defaultCharge)
-                .friction(0.9)
+                // .gravity(-0.01)
+                // .charge(that.defaultCharge)
+                // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.totalSort(e.alpha))
@@ -403,8 +412,8 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                })
-                .start();
+                });
+                // .start();
         },
 
         //
@@ -463,8 +472,6 @@ nytg.Chart = function() {
                 .friction(0)
                 .on("tick", function(e) {
                     that.circle
-                        // .each(that.departmentSort(e.alpha))
-                        // .each(that.collide(0.5))
                         .each(that.staticDepartment(e.alpha))
                         .attr("cx", function(d) {
                             return d.x;

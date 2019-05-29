@@ -1,0 +1,15 @@
+#shell {
+    width: 1000px;
+}
+
+#navUs.selected {
+    padding-bottom: 0;
+}
+
+.tabContent {
+    padding: 8px 0;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}

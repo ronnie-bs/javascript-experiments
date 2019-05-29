@@ -173,6 +173,7 @@
     border-left: solid 1px #CCC;
     background: #f9f9f9;
     margin: 0 0;
+    list-style: none;
 }
 
 .nytg-navigation li:first-of-type {

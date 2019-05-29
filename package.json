@@ -1,0 +1,25 @@
+{
+  "name": "nytimes-obama-budget",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "live-server --no-browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronnie-bs/nytimes-obama-budget.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ronnie-bs/nytimes-obama-budget/issues"
+  },
+  "homepage": "https://github.com/ronnie-bs/nytimes-obama-budget#readme"
+}

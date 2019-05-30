@@ -105,7 +105,7 @@ nytg.Chart = function() {
 
             this.scatterPlotY = this.changeScale(0);
             this.pctFormat = function(p) {
-                if (p === Infinity || p === -Infinity) {
+                if (p === 'Infinity' || p === '-Infinity') {
                     return "N.A."
                 } else {
                     return that.pFormat(p)
@@ -135,10 +135,10 @@ nytg.Chart = function() {
 
             // calculates positions of the category clumps it is probably overly complicated
             var columns = [4, 7, 9, 9]
-            rowPadding = [150, 100, 90, 80, 70],
+                rowPadding = [150, 100, 90, 80, 70],
                 rowPosition = [220, 450, 600, 720, 817],
                 rowOffsets = [130, 80, 60, 45, 48]
-            currentX = 0,
+                currentX = 0,
                 currentY = 0;
             for (var i = 0; i < nytg.category_data.length; i++) {
                 var t = 0,
@@ -181,7 +181,6 @@ nytg.Chart = function() {
                 }
             };
 
-            // this.groupScale = d3.scaleOrdinal().domain(this.categoriesList).rangePoints([0, 1]);
             this.groupScale = d3.scalePoint().domain(this.categoriesList).range([0, 1]);
 
             // Builds the nodes data array from the original data
@@ -363,13 +362,10 @@ nytg.Chart = function() {
             var that = this
             var circlePositions = {};
             this.circle.each(function(d) {
-
                 circlePositions[d.sid] = {
                     x: Math.round(d.x),
                     y: Math.round(d.y)
                 }
-
-
             })
             return JSON.stringify(circlePositions)
         },
@@ -387,10 +383,11 @@ nytg.Chart = function() {
             const forceX = d3.forceX(this.width / 2).strength(0.015);
             const forceY = d3.forceY(this.height / 2).strength(0.015);
             this.force = d3.forceSimulation()
+                .nodes(this.nodes)
                 .force('x', forceX)
                 .force('y',  forceY)
-                .force('charge', this.defaultCharge)
-                .force('friction', 0.9);
+                .force('charge', this.defaultCharge);
+                // .force('friction', 0.9);
         },
 
         //
@@ -404,8 +401,8 @@ nytg.Chart = function() {
                 // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
-                        .each(that.totalSort(e.alpha))
-                        .each(that.buoyancy(e.alpha))
+                        .each(that.totalSort(this.alpha))
+                        .each(that.buoyancy(this.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -422,9 +419,9 @@ nytg.Chart = function() {
         mandatoryLayout: function() {
             var that = this;
             this.force
-                .gravity(0)
-                .friction(0.9)
-                .charge(that.defaultCharge)
+                // .gravity(0)
+                // .friction(0.9)
+                // .charge(that.defaultCharge)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.mandatorySort(e.alpha))
@@ -435,8 +432,8 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                })
-                .start();
+                });
+                // .start();
         },
 
         //
@@ -445,9 +442,9 @@ nytg.Chart = function() {
         discretionaryLayout: function() {
             var that = this;
             this.force
-                .gravity(0)
-                .charge(0)
-                .friction(0.2)
+                // .gravity(0)
+                // .charge(0)
+                // .friction(0.2)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.discretionarySort(e.alpha))
@@ -457,8 +454,8 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                })
-                .start();
+                });
+                // .start();
         },
 
         //
@@ -467,9 +464,9 @@ nytg.Chart = function() {
         departmentLayout: function() {
             var that = this;
             this.force
-                .gravity(0)
-                .charge(1)
-                .friction(0)
+                // .gravity(0)
+                // .charge(1)
+                // .friction(0)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.staticDepartment(e.alpha))
@@ -479,8 +476,8 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                })
-                .start();
+                });
+                // .start();
         },
 
         //
@@ -489,9 +486,9 @@ nytg.Chart = function() {
         comparisonLayout: function() {
             var that = this;
             this.force
-                .gravity(0)
-                .charge(that.defaultCharge)
-                .friction(0.9)
+                // .gravity(0)
+                // .charge(that.defaultCharge)
+                // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.comparisonSort(e.alpha))
@@ -501,8 +498,8 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                })
-                .start();
+                });
+                // .start();
         },
 
         // ----------------------------------------------------------------------------------------
@@ -517,7 +514,6 @@ nytg.Chart = function() {
             return function(d) {
                 var targetY = that.centerY;
                 var targetX = that.width / 2;
-
 
                 if (d.isNegative) {
                     if (d.changeCategory > 0) {

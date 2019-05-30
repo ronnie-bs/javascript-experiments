@@ -140,6 +140,7 @@ nytg.Chart = function() {
                 rowOffsets = [130, 80, 60, 45, 48]
                 currentX = 0,
                 currentY = 0;
+
             for (var i = 0; i < nytg.category_data.length; i++) {
                 var t = 0,
                     w,
@@ -157,13 +158,13 @@ nytg.Chart = function() {
                         break;
                     };
                     t += columns[j];
-                };
+                }
 
                 if (numInRow === -1) {
                     numInRow = nytg.category_data.length - d3.sum(columns);
                     currentRow = columns.length;
                     positionInRow = i - d3.sum(columns)
-                };
+                }
 
                 nytg.category_data[i].row = currentRow;
                 nytg.category_data[i].column = positionInRow;
@@ -320,39 +321,39 @@ nytg.Chart = function() {
                 })
                 .style("stroke", function(d) {
                     return that.getStrokeColor(d);
-                })
-                .on("mouseover", function(d, i) {
-                    var el = d3.select(this)
-                    var xpos = Number(el.attr('cx'))
-                    var ypos = (el.attr('cy') - d.radius - 10)
-                    el.style("stroke", "#000").style("stroke-width", 3);
-                    d3.select("#nytg-tooltip").style('top', ypos + "px").style('left', xpos + "px").style('display', 'block')
-                        .classed('nytg-plus', (d.changeCategory > 0))
-                        .classed('nytg-minus', (d.changeCategory < 0));
-                    d3.select("#nytg-tooltip .nytg-name").html(that.nameFormat(d.name))
-
-                    d3.select("#nytg-tooltip .nytg-discretion").text(that.discretionFormat(d.discretion))
-                    d3.select("#nytg-tooltip .nytg-department").text(d.group)
-                    d3.select("#nytg-tooltip .nytg-value").html("$" + that.bigFormat(d.value))
-
-                    var pctchngout = that.pctFormat(d.change)
-                    if (d.change == "N.A.") {
-                        pctchngout = "N.A."
-                    };
-                    d3.select("#nytg-tooltip .nytg-change").html(pctchngout)
-                })
-                .on("mouseout", function(d, i) {
-                    d3.select(this)
-                        .style("stroke-width", 1)
-                        .style("stroke", function(d) {
-                            return that.getStrokeColor(d);
-                        })
-                    d3.select("#nytg-tooltip").style('display', 'none')
                 });
+                // .on("mouseover", function(d, i) {
+                //     var el = d3.select(this)
+                //     var xpos = Number(el.attr('cx'))
+                //     var ypos = (el.attr('cy') - d.radius - 10)
+                //     el.style("stroke", "#000").style("stroke-width", 3);
+                //     d3.select("#nytg-tooltip").style('top', ypos + "px").style('left', xpos + "px").style('display', 'block')
+                //         .classed('nytg-plus', (d.changeCategory > 0))
+                //         .classed('nytg-minus', (d.changeCategory < 0));
+                //     d3.select("#nytg-tooltip .nytg-name").html(that.nameFormat(d.name))
+
+                //     d3.select("#nytg-tooltip .nytg-discretion").text(that.discretionFormat(d.discretion))
+                //     d3.select("#nytg-tooltip .nytg-department").text(d.group)
+                //     d3.select("#nytg-tooltip .nytg-value").html("$" + that.bigFormat(d.value))
+
+                //     var pctchngout = that.pctFormat(d.change)
+                //     if (d.change == "N.A.") {
+                //         pctchngout = "N.A."
+                //     };
+                //     d3.select("#nytg-tooltip .nytg-change").html(pctchngout)
+                // })
+                // .on("mouseout", function(d, i) {
+                //     d3.select(this)
+                //         .style("stroke-width", 1)
+                //         .style("stroke", function(d) {
+                //             return that.getStrokeColor(d);
+                //         })
+                //     d3.select("#nytg-tooltip").style('display', 'none')
+                // });
 
             this.circle.transition().duration(2000).attr("r", function(d) {
                 return d.radius
-            })
+            });
         },
 
         //
@@ -384,9 +385,9 @@ nytg.Chart = function() {
             const forceY = d3.forceY(this.height / 2).strength(0.015);
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
-                .force('x', forceX)
-                .force('y',  forceY)
-                .force('charge', this.defaultCharge);
+                // .force('x', forceX)
+                // .force('y',  forceY)
+                // .force('charge', this.defaultCharge);
                 // .force('friction', 0.9);
         },
 
@@ -399,18 +400,31 @@ nytg.Chart = function() {
                 // .gravity(-0.01)
                 // .charge(that.defaultCharge)
                 // .friction(0.9)
-                .on("tick", function(e) {
+                .on("tick", function(d) {
                     that.circle
-                        .each(that.totalSort(this.alpha))
-                        .each(that.buoyancy(this.alpha))
+                        // .each(that.totalSort(this.alpha))
+                        // .each(that.buoyancy(this.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
                         .attr("cy", function(d) {
                             return d.y;
-                        });
+                        })
                 });
                 // .start();
+        },
+
+        ronnieTotalLayout: function() {
+            var that = this;
+            that.circle
+                .each(that.totalSort(this.alpha))
+                .each(that.buoyancy(this.alpha))
+                .attr("cx", function(d) {
+                    return d.x;
+                })
+                .attr("cy", function(d) {
+                    return d.y;
+                });
         },
 
         //

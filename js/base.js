@@ -9,6 +9,7 @@ nytg.filename = function(index) {
     ];
     return tabs[index];
 }
+
 $j("#save").click(function() {
     $j.ajax({
         type: "POST",
@@ -24,8 +25,17 @@ nytg.ready = function() {
     var that = this;
     nytg.c = new nytg.Chart();
     nytg.c.init();
-    nytg.c.start();
+    // nytg.c.start();
+    /* Ronnie test code starts */
+    nytg.c.ronnieTotalLayout();
+    this.currentOverlay = $j("#nytg-totalOverlay");
+    this.currentOverlay.delay(300).fadeIn(500);
+    $j("#nytg-chartFrame").css({
+        'height': 550
+    });
+    /* Ronnie test code ends */
 
+/*
     this.highlightedItems = [];
 
     var currentOverlay = undefined;
@@ -73,6 +83,7 @@ nytg.ready = function() {
             });
         }
     }
+*/
 }
 
 if (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect) {

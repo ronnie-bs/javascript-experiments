@@ -308,7 +308,7 @@ nytg.Chart = function() {
                     return d.sid;
                 });
 
-            this.circle.enter().append("svg:circle")
+            this.circle = this.circle.enter().append("svg:circle")
                 .attr("r", function(d) {
                     return 0;
                 })
@@ -321,35 +321,35 @@ nytg.Chart = function() {
                 })
                 .style("stroke", function(d) {
                     return that.getStrokeColor(d);
+                })
+                .on("mouseover", function(d, i) {
+                    var el = d3.select(this)
+                    var xpos = Number(el.attr('cx'))
+                    var ypos = (el.attr('cy') - d.radius - 10)
+                    el.style("stroke", "#000").style("stroke-width", 3);
+                    d3.select("#nytg-tooltip").style('top', ypos + "px").style('left', xpos + "px").style('display', 'block')
+                        .classed('nytg-plus', (d.changeCategory > 0))
+                        .classed('nytg-minus', (d.changeCategory < 0));
+                    d3.select("#nytg-tooltip .nytg-name").html(that.nameFormat(d.name))
+
+                    d3.select("#nytg-tooltip .nytg-discretion").text(that.discretionFormat(d.discretion))
+                    d3.select("#nytg-tooltip .nytg-department").text(d.group)
+                    d3.select("#nytg-tooltip .nytg-value").html("$" + that.bigFormat(d.value))
+
+                    var pctchngout = that.pctFormat(d.change)
+                    if (d.change == "N.A.") {
+                        pctchngout = "N.A."
+                    };
+                    d3.select("#nytg-tooltip .nytg-change").html(pctchngout)
+                })
+                .on("mouseout", function(d, i) {
+                    d3.select(this)
+                        .style("stroke-width", 1)
+                        .style("stroke", function(d) {
+                            return that.getStrokeColor(d);
+                        })
+                    d3.select("#nytg-tooltip").style('display', 'none')
                 });
-                // .on("mouseover", function(d, i) {
-                //     var el = d3.select(this)
-                //     var xpos = Number(el.attr('cx'))
-                //     var ypos = (el.attr('cy') - d.radius - 10)
-                //     el.style("stroke", "#000").style("stroke-width", 3);
-                //     d3.select("#nytg-tooltip").style('top', ypos + "px").style('left', xpos + "px").style('display', 'block')
-                //         .classed('nytg-plus', (d.changeCategory > 0))
-                //         .classed('nytg-minus', (d.changeCategory < 0));
-                //     d3.select("#nytg-tooltip .nytg-name").html(that.nameFormat(d.name))
-
-                //     d3.select("#nytg-tooltip .nytg-discretion").text(that.discretionFormat(d.discretion))
-                //     d3.select("#nytg-tooltip .nytg-department").text(d.group)
-                //     d3.select("#nytg-tooltip .nytg-value").html("$" + that.bigFormat(d.value))
-
-                //     var pctchngout = that.pctFormat(d.change)
-                //     if (d.change == "N.A.") {
-                //         pctchngout = "N.A."
-                //     };
-                //     d3.select("#nytg-tooltip .nytg-change").html(pctchngout)
-                // })
-                // .on("mouseout", function(d, i) {
-                //     d3.select(this)
-                //         .style("stroke-width", 1)
-                //         .style("stroke", function(d) {
-                //             return that.getStrokeColor(d);
-                //         })
-                //     d3.select("#nytg-tooltip").style('display', 'none')
-                // });
 
             this.circle.transition().duration(2000).attr("r", function(d) {
                 return d.radius
@@ -381,13 +381,13 @@ nytg.Chart = function() {
             //     .nodes(this.nodes)
             //     .size([this.width, this.height]);
 
-            const forceX = d3.forceX(this.width / 2).strength(0.015);
-            const forceY = d3.forceY(this.height / 2).strength(0.015);
+            const forceX = d3.forceX(this.width / 2.5).strength(0.006);
+            const forceY = d3.forceY(this.height / 5.5).strength(0.006);
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
-                // .force('x', forceX)
-                // .force('y',  forceY)
-                // .force('charge', this.defaultCharge);
+                .force('forceX', forceX)
+                .force('forceY',  forceY)
+                .force('charge', this.defaultCharge);
                 // .force('friction', 0.9);
         },
 
@@ -414,19 +414,6 @@ nytg.Chart = function() {
                 // .start();
         },
 
-        ronnieTotalLayout: function() {
-            var that = this;
-            that.circle
-                .each(that.totalSort(this.alpha))
-                .each(that.buoyancy(this.alpha))
-                .attr("cx", function(d) {
-                    return d.x;
-                })
-                .attr("cy", function(d) {
-                    return d.y;
-                });
-        },
-
         //
         //
         //
@@ -438,8 +425,8 @@ nytg.Chart = function() {
                 // .charge(that.defaultCharge)
                 .on("tick", function(e) {
                     that.circle
-                        .each(that.mandatorySort(e.alpha))
-                        .each(that.buoyancy(e.alpha))
+                        // .each(that.mandatorySort(e.alpha))
+                        // .each(that.buoyancy(e.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -461,7 +448,7 @@ nytg.Chart = function() {
                 // .friction(0.2)
                 .on("tick", function(e) {
                     that.circle
-                        .each(that.discretionarySort(e.alpha))
+                        // .each(that.discretionarySort(e.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -483,7 +470,7 @@ nytg.Chart = function() {
                 // .friction(0)
                 .on("tick", function(e) {
                     that.circle
-                        .each(that.staticDepartment(e.alpha))
+                        // .each(that.staticDepartment(e.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -505,7 +492,7 @@ nytg.Chart = function() {
                 // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
-                        .each(that.comparisonSort(e.alpha))
+                        // .each(that.comparisonSort(e.alpha))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -524,6 +511,7 @@ nytg.Chart = function() {
         //
         //
         totalSort: function(alpha) {
+            console.log('totalSort');
             var that = this;
             return function(d) {
                 var targetY = that.centerY;
@@ -536,9 +524,12 @@ nytg.Chart = function() {
                         d.x = 1100
                     }
                 }
-                //
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity + 0.02) * alpha
-                d.x = d.x + (targetX - d.x) * (that.defaultGravity + 0.02) * alpha
+                
+                var dy = isNaN(d.y) ? 0 : d.y;
+                var dx = isNaN(d.x) ? 0 : d.x;
+
+                d.y = dy + (targetY - dy) * (that.defaultGravity + 0.02) * alpha
+                d.x = dx + (targetX - dx) * (that.defaultGravity + 0.02) * alpha
             };
         },
 
@@ -549,7 +540,9 @@ nytg.Chart = function() {
             var that = this;
             return function(d) {
                 var targetY = that.centerY - (d.changeCategory / 3) * that.boundingRadius
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * alpha * alpha * 100
+                var dy = isNaN(d.y) ? 0 : d.y;
+                // d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * alpha * alpha * 100;
+                d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * 100;
             };
         },
 

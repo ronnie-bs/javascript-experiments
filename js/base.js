@@ -25,17 +25,8 @@ nytg.ready = function() {
     var that = this;
     nytg.c = new nytg.Chart();
     nytg.c.init();
-    // nytg.c.start();
-    /* Ronnie test code starts */
-    nytg.c.ronnieTotalLayout();
-    this.currentOverlay = $j("#nytg-totalOverlay");
-    this.currentOverlay.delay(300).fadeIn(500);
-    $j("#nytg-chartFrame").css({
-        'height': 550
-    });
-    /* Ronnie test code ends */
+    nytg.c.start();
 
-/*
     this.highlightedItems = [];
 
     var currentOverlay = undefined;
@@ -83,7 +74,6 @@ nytg.ready = function() {
             });
         }
     }
-*/
 }
 
 if (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect) {

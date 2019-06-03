@@ -11,6 +11,8 @@ var x = d3.scaleBand().range([0, width]),
     z = d3.scaleLinear().domain([0, 4]).clamp(true),
     c = d3.scaleOrdinal(d3.schemeCategory10);
 
+console.log('x', x);
+
 var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)

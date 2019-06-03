@@ -25,9 +25,9 @@ nytg.Chart = function() {
         defaultGravity: 0.1,
         defaultCharge: function(d) {
             if (d.value < 0) {
-                return 0
+                return 0;
             } else {
-                return -Math.pow(d.radius, 2.0) / 8
+                return -Math.pow(d.radius, 2.0) / 8;
             };
         },
         links: [],
@@ -135,10 +135,10 @@ nytg.Chart = function() {
 
             // calculates positions of the category clumps it is probably overly complicated
             var columns = [4, 7, 9, 9]
-                rowPadding = [150, 100, 90, 80, 70],
+            rowPadding = [150, 100, 90, 80, 70],
                 rowPosition = [220, 450, 600, 720, 817],
                 rowOffsets = [130, 80, 60, 45, 48]
-                currentX = 0,
+            currentX = 0,
                 currentY = 0;
 
             for (var i = 0; i < nytg.category_data.length; i++) {
@@ -386,9 +386,9 @@ nytg.Chart = function() {
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
                 .force('forceX', forceX)
-                .force('forceY',  forceY)
+                .force('forceY', forceY)
                 .force('charge', this.defaultCharge);
-                // .force('friction', 0.9);
+            // .force('friction', 0.9);
         },
 
         //
@@ -411,7 +411,7 @@ nytg.Chart = function() {
                             return d.y;
                         })
                 });
-                // .start();
+            // .start();
         },
 
         //
@@ -434,7 +434,7 @@ nytg.Chart = function() {
                             return d.y;
                         });
                 });
-                // .start();
+            // .start();
         },
 
         //
@@ -456,7 +456,7 @@ nytg.Chart = function() {
                             return d.y;
                         });
                 });
-                // .start();
+            // .start();
         },
 
         //
@@ -478,7 +478,7 @@ nytg.Chart = function() {
                             return d.y;
                         });
                 });
-                // .start();
+            // .start();
         },
 
         //
@@ -494,13 +494,13 @@ nytg.Chart = function() {
                     that.circle
                         // .each(that.comparisonSort(e.alpha))
                         .attr("cx", function(d) {
-                            return d.x;
+                            return isNaN(d.x) ? 0 : d.x;
                         })
                         .attr("cy", function(d) {
-                            return d.y;
+                            return isNaN(d.y) ? 0 : d.y;
                         });
                 });
-                // .start();
+            // .start();
         },
 
         // ----------------------------------------------------------------------------------------
@@ -524,7 +524,7 @@ nytg.Chart = function() {
                         d.x = 1100
                     }
                 }
-                
+
                 var dy = isNaN(d.y) ? 0 : d.y;
                 var dx = isNaN(d.x) ? 0 : d.x;
 

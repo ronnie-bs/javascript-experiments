@@ -209,3 +209,15 @@ blockquote q:before,
 blockquote q:after {
     content: "";
 }
+
+.background {
+    fill: #eee;
+}
+
+line {
+    stroke: #fff;
+}
+
+text.active {
+    fill: red;
+}

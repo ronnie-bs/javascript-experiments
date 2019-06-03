@@ -2,6 +2,11 @@ html {
     min-width: 1040px;
 }
 
+.action {
+    display: block;
+    margin-bottom: 10px;
+}
+
 .kf body {
     background: #fcfcfa;
     color: #333;

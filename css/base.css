@@ -1,3 +1,8 @@
+.action {
+    display: block;
+    margin-bottom: 10px;
+}
+
 .nytg {
     font-family: Arial;
 }
@@ -34,7 +39,7 @@
 
 #nytg-chartCanvas {
     position: absolute;
-    top: 0;
+    top: 40;
     left: 0;
     z-index: 10;
     width: 100%;
@@ -142,6 +147,7 @@
     color: #090;
 }
 
+
 /* Navigation */
 
 .nytg-navBar {
@@ -171,7 +177,6 @@
 }
 
 .nytg-navigation li:last-of-type {
-
     border-right: solid 1px #CCC;
     border-radius: 0 4px 4px 0;
 }
@@ -182,6 +187,7 @@
     border-color: #AAA;
     box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
+
 
 /*Category List*/
 
@@ -198,6 +204,7 @@
     background-color: #f3f3f3;
 }
 
+
 /* Scoop Fixes */
 
 span.noWrap.feedback {
@@ -206,7 +213,6 @@ span.noWrap.feedback {
 
 #interactiveFooter {
     border-top: 1px solid #DDDDDD;
-
     margin-top: 10px;
     padding-top: 12px !important;
 }

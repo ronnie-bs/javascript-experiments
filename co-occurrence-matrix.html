@@ -7,14 +7,23 @@
     <link rel="stylesheet" type="text/css" href="css/co-occurrence-matrix.css">
 </header>
 
-Order:
-<select id="order">
-  <option value="name">by Name</option>
-  <option value="count">by Frequency</option>
-  <option value="group">by Cluster</option>
-</select>
+<body>
+    <div class="action">
+        <a href="index.html">Back to Menu</a>
+    </div>
 
-<div id="chart"></div>
+    <div>
+        Order:
+        <select id="order">
+          <option value="name">by Name</option>
+          <option value="count">by Frequency</option>
+          <option value="group">by Cluster</option>
+        </select>
 
+        <div id="chart"></div>
+    </div>
+</body>
 <script type="text/javascript" src="node_modules/d3/dist/d3.min.js"></script>
 <script type="text/javascript" src="js/co-occurrence-matrix.js"></script>
+
+</html>

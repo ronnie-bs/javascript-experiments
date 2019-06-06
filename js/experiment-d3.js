@@ -1,85 +1,72 @@
-var svg = d3.select('svg'),
-    width = +svg.attr('width'),
-    height = +svg.attr('height');
-    
-var nodesData = [
-    { 'name': 'Travis', 'sex': 'M' },
-    { 'name': 'Rake', 'sex': 'M' },
-    { 'name': 'Diana', 'sex': 'F' },
-    { 'name': 'Rachel', 'sex': 'F' },
-    { 'name': 'Shawn', 'sex': 'M' },
-    { 'name': 'Emerald', 'sex': 'F' }
-]
+var treeData =
+  {
+    "name": "Top Level",
+    "children": [
+      { 
+		"name": "Level 2: A",
+        "children": [
+          { "name": "Son of A" },
+          { "name": "Daughter of A" }
+        ]
+      },
+      { "name": "Level 2: B" }
+    ]
+  };
 
-// var linksData = [
-// 	{ 'source': 'Travis', 'target': 'Rake' },
-//     { 'source': 'Diana', 'target': 'Rake' },
-//     { 'source': 'Diana', 'target': 'Rachel' },
-//     { 'source': 'Rachel', 'target': 'Rake' },
-//     { 'source': 'Rachel', 'target': 'Shawn' },
-//     { 'source': 'Emerald', 'target': 'Rachel' }
-// ]
+// set the dimensions and margins of the diagram
+var margin = {top: 40, right: 90, bottom: 50, left: 90},
+    width = 660 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-var node = svg.append('g')
-        .attr('class', 'nodes')
-    .selectAll('circle')
-    .data(nodesData)
-    .enter().append('circle')
-        .attr('r', 5)
-        .attr('fill', 'red');  
+// declares a tree layout and assigns the size
+var treemap = d3.tree()
+    .size([width, height]);
 
-// var link = svg.append('g')
-//         .attr('class', 'links')
-//     .selectAll('line')
-//     .data(linksData)
-//     .enter().append('line')
-//         .attr('stroke-width', 2);        
+//  assigns the data to a hierarchy using parent-child relationships
+var nodes = d3.hierarchy(treeData);
 
-var simulation = d3.forceSimulation()
-    .nodes(nodesData);	
-                    
-simulation
-    .force('charge_force', d3.forceManyBody())
-    .force('center_force', d3.forceCenter(width / 2, height / 2));
-    // .force('links', d3.forceLink(linksData).id((d) => d.name));
+// maps the node data to the tree layout
+nodes = treemap(nodes);
 
-simulation
-    .on('tick', () => {
-        node
-            .attr('cx', (d) => d.x)
-            .attr('cy', (d) => d.y);
-            
-        // link
-        //     .attr('x1', (d) => d.source.x)
-        //     .attr('y1', (d) => d.source.y)
-        //     .attr('x2', (d) => d.target.x)
-        //     .attr('y2', (d) => d.target.y);
-    })
-    .on('end', pulse);
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom),
+    g = svg.append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
 
+// adds the links between the nodes
+var link = g.selectAll(".link")
+    .data( nodes.descendants().slice(1))
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", function(d) {
+       return "M" + d.x + "," + d.y
+         + "C" + d.x + "," + (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," + d.parent.y;
+       });
 
+// adds each node as a group
+var node = g.selectAll(".node")
+    .data(nodes.descendants())
+  .enter().append("g")
+    .attr("class", function(d) { 
+      return "node" + 
+        (d.children ? " node--internal" : " node--leaf"); })
+    .attr("transform", function(d) { 
+      return "translate(" + d.x + "," + d.y + ")"; });
 
-function pulse() {
-    contract.apply(this);
+// adds the circle to the node
+node.append("circle")
+  .attr("r", 10);
 
-    function contract() {
-        console.log('contracting...', this);
-        this
-            .alphaMin(0.5)
-            // .drag(0.1)
-            .force('X', d3.forceX().x(function(d) { return 0.8 * d._x }))
-            .force('Y', d3.forceY().y(function(d) { return 0.8 * d._y }))
-            .restart()
-            // .on('end', expand);
-    }
-
-    function expand() {
-        console.log('expanding...');
-        this
-            .alphaMin(0.005)
-            // .drag(0.2)
-            .force('X', d3.forceX().x(function(d) { return d._x }))
-            .force('Y', d3.forceY().y(function(d) { return d._y }))
-            .on('end', contract);
-    }
-}
+// adds the text to the node
+node.append("text")
+  .attr("dy", ".35em")
+  .attr("y", function(d) { return d.children ? -20 : 20; })
+  .style("text-anchor", "middle")
+  .text(function(d) { return d.data.name; });

@@ -352,7 +352,7 @@ nytg.Chart = function() {
                 });
 
             this.circle.transition().duration(2000).attr("r", function(d) {
-                return d.radius
+                return d.radius;
             });
         },
 

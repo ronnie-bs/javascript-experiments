@@ -543,7 +543,6 @@ nytg.Chart = function() {
         //
         //
         //
-/*        
         buoyancy: function(alpha) {
             var that = this;
             return function(d) {
@@ -553,7 +552,6 @@ nytg.Chart = function() {
                 d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * 100;
             };
         },
-*/
         //
         //
         //

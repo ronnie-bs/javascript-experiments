@@ -27,7 +27,7 @@ nytg.Chart = function() {
             if (d.value < 0) {
                 return 0;
             } else {
-                return -Math.pow(d.radius, 2.0) / 8;
+                return Math.pow(d.radius, 2.0) / 8;
             };
         },
         links: [],
@@ -382,12 +382,16 @@ nytg.Chart = function() {
             //     .size([this.width, this.height]);
 
             const forceX = d3.forceX(this.width / 2.5).strength(0.006);
-            const forceY = d3.forceY(this.height / 5.5).strength(0.006);
+            const forceY = d3.forceY(this.height /4.5).strength(0.006);
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
                 .force('forceX', forceX)
                 .force('forceY', forceY)
-                .force('charge', this.defaultCharge);
+                // .force('charge', this.defaultCharge)
+                .force('charge', d3.forceManyBody().strength(0.5))
+                .force('collision', d3.forceCollide().radius(function(d) {
+                    return d.radius;
+                }));
             // .force('friction', 0.9);
         },
 

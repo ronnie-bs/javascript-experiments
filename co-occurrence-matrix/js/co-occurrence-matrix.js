@@ -20,6 +20,7 @@ var svg = d3.select("#chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
 d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
     var matrix = [],
         nodes = miserables.nodes,

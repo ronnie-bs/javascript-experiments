@@ -23,6 +23,7 @@ nytg.Chart = function() {
 
         //d3 settings
         defaultGravity: 0.1,
+/*
         defaultCharge: function(d) {
             if (d.value < 0) {
                 return 0;
@@ -30,6 +31,7 @@ nytg.Chart = function() {
                 return Math.pow(d.radius, 2.0) / 8;
             };
         },
+*/
         links: [],
         nodes: [],
         positiveNodes: [],
@@ -135,10 +137,10 @@ nytg.Chart = function() {
 
             // calculates positions of the category clumps it is probably overly complicated
             var columns = [4, 7, 9, 9]
-            rowPadding = [150, 100, 90, 80, 70],
+                rowPadding = [150, 100, 90, 80, 70],
                 rowPosition = [220, 450, 600, 720, 817],
                 rowOffsets = [130, 80, 60, 45, 48]
-            currentX = 0,
+                currentX = 0,
                 currentY = 0;
 
             for (var i = 0; i < nytg.category_data.length; i++) {
@@ -359,6 +361,7 @@ nytg.Chart = function() {
         //
         //
         //
+/*
         getCirclePositions: function() {
             var that = this
             var circlePositions = {};
@@ -370,7 +373,7 @@ nytg.Chart = function() {
             })
             return JSON.stringify(circlePositions)
         },
-
+*/
         //
         //
         //
@@ -523,9 +526,9 @@ nytg.Chart = function() {
 
                 if (d.isNegative) {
                     if (d.changeCategory > 0) {
-                        d.x = -200
+                        d.x = -200;
                     } else {
-                        d.x = 1100
+                        d.x = 1100;
                     }
                 }
 
@@ -540,6 +543,7 @@ nytg.Chart = function() {
         //
         //
         //
+/*        
         buoyancy: function(alpha) {
             var that = this;
             return function(d) {
@@ -549,7 +553,7 @@ nytg.Chart = function() {
                 d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * 100;
             };
         },
-
+*/
         //
         //
         //
@@ -680,6 +684,7 @@ nytg.Chart = function() {
         //
         //
         //
+/*
         collide: function(alpha) {
             var that = this;
             var padding = 6;
@@ -711,5 +716,6 @@ nytg.Chart = function() {
                 });
             };
         }
+*/
     }
 };

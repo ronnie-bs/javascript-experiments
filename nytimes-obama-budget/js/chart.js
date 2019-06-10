@@ -4,7 +4,7 @@ nytg.Chart = function() {
     return {
         $j: jQuery,
         //defaults
-        width: 970,
+        width: 1050,
         height: 850,
         groupPadding: 10,
         totalValue: 3700000000,
@@ -225,7 +225,7 @@ nytg.Chart = function() {
             this.svg = d3.select("#nytg-chartCanvas").append("svg:svg")
                 .attr("width", this.width)
                 .append('g')
-                    .attr('transform', 'translate(' + 60 + ', ' + 120 + ')');
+                    .attr('transform', 'translate(' + 120 + ', ' + 120 + ')');
 
             for (var i = 0; i < this.changeTickValues.length; i++) {
                 d3.select("#nytg-discretionaryOverlay").append("div")
@@ -367,11 +367,12 @@ nytg.Chart = function() {
         totalLayout: function() {
             var that = this;
             this.force
-                .force('forceX', d3.forceX(this.width / 2).strength(0.001))
-                .force('forceY', d3.forceY(this.height / 2).strength(0.001))
+                .force('forceX', d3.forceX(this.width / 2).strength(-0.0001))
+                .force('forceY', d3.forceY(this.height / 2).strength(-0.0001))
                 .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
-                .force('radial', d3.forceRadial(300))
-                .force('collision', d3.forceCollide((d) => d.radius).strength(1))
+                .force('radial', d3.forceRadial(200))
+                .force('collision', d3.forceCollide((d) => d.radius).strength(0.009))
+                .alphaDecay(0.01)
                 .on("tick", function(d) {
                     that.circle
                         .each(that.totalSort(this.alpha()))
@@ -394,7 +395,7 @@ nytg.Chart = function() {
                 .force('forceY', d3.forceY(this.height / 2).strength(-0.001))
                 // .force('charge', d3.forceManyBody().strength(-0.006))
                 .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
-                .force('radial', d3.forceRadial(300))
+                .force('radial', d3.forceRadial(200))
                 .force('collision', d3.forceCollide().radius((d) => d.radius).strength(1))
                 .on("tick", function(e) {
                     that.circle

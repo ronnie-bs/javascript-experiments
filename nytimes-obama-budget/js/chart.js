@@ -223,7 +223,9 @@ nytg.Chart = function() {
             };
 
             this.svg = d3.select("#nytg-chartCanvas").append("svg:svg")
-                .attr("width", this.width);
+                .attr("width", this.width)
+                .append('g')
+                    .attr('transform', 'translate(' + 60 + ', ' + 120 + ')');
 
             for (var i = 0; i < this.changeTickValues.length; i++) {
                 d3.select("#nytg-discretionaryOverlay").append("div")
@@ -365,18 +367,15 @@ nytg.Chart = function() {
         totalLayout: function() {
             var that = this;
             this.force
-                .force('forceX', d3.forceX(this.width / 2).strength(0.05))
-                .force('forceY', d3.forceY(this.height / 4.5).strength(0.05))
-                // .force('charge', d3.forceManyBody().strength(0.006))
-                // .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
-                .force('radial', d3.forceRadial(200))
-                .force('collision', d3.forceCollide().radius((d) => {
-                    return d.radius;
-                }))
+                .force('forceX', d3.forceX(this.width / 2).strength(0.001))
+                .force('forceY', d3.forceY(this.height / 2).strength(0.001))
+                .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
+                .force('radial', d3.forceRadial(300))
+                .force('collision', d3.forceCollide((d) => d.radius).strength(1))
                 .on("tick", function(d) {
                     that.circle
                         .each(that.totalSort(this.alpha()))
-                        .each(that.buoyancy(this.alpha()))
+                        // .each(that.buoyancy(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -384,25 +383,23 @@ nytg.Chart = function() {
                             return d.y;
                         })
                 })
-                .alpha(0.2)
+                .alpha(1)
                 .restart();
         },
 
         mandatoryLayout: function() {
             var that = this;
             this.force
-                .force('forceX', d3.forceX(this.width / 2).strength(-0.05))
-                .force('forceY', d3.forceY(this.height / 4.5).strength(-0.05))
+                .force('forceX', d3.forceX(this.width / 2).strength(-0.03))
+                .force('forceY', d3.forceY(this.height / 2).strength(-0.001))
                 // .force('charge', d3.forceManyBody().strength(-0.006))
                 .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
-                .force('radial', d3.forceRadial(200))
-                .force('collision', d3.forceCollide().radius((d) => {
-                    return d.radius;
-                }))
+                .force('radial', d3.forceRadial(300))
+                .force('collision', d3.forceCollide().radius((d) => d.radius).strength(1))
                 .on("tick", function(e) {
                     that.circle
                         .each(that.mandatorySort(this.alpha()))
-                        .each(that.buoyancy(this.alpha()))
+                        // .each(that.buoyancy(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -410,7 +407,7 @@ nytg.Chart = function() {
                             return d.y;
                         });
                 })
-                .alpha(0.2)
+                .alpha(1)
                 .restart();
         },
 

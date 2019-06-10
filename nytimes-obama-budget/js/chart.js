@@ -353,9 +353,10 @@ nytg.Chart = function() {
                     d3.select("#nytg-tooltip").style('display', 'none')
                 });
 
-            this.circle.transition().duration(2000).attr("r", function(d) {
-                return d.radius;
-            });
+            this.circle.transition().duration(2000)
+                .attr("r", function(d) {
+                    return d.radius;
+                });
         },
 
         //
@@ -380,23 +381,18 @@ nytg.Chart = function() {
         start: function() {
             var that = this;
 
-            // this.force = d3.layout.force()
-            //     .nodes(this.nodes)
-            //     .size([this.width, this.height]);
-
-            // const forceX = d3.forceX(this.width / 2.5).strength(0.006);
-            // const forceY = d3.forceY(this.height /4.5).strength(0.006);
-            const forceX = d3.forceX(this.width / 2).strength(0.05);
-            const forceY = d3.forceY(this.height / 4.5).strength(0.05);
+            const forceX = d3.forceX(this.width / 2.5).strength(0.002);
+            const forceY = d3.forceY(this.height / 4.5).strength(0.002);
 
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
                 .force('forceX', forceX)
                 .force('forceY', forceY)
-                .force('charge', d3.forceManyBody().strength(5))
-                .force('collision', d3.forceCollide().radius(function(d) {
-                    return d.radius / 1.3;
-                }));
+                .force('charge', d3.forceManyBody().strength(2))
+                .force('collision', d3.forceCollide().radius((d) => {
+                    return d.radius;
+                }))
+                .alpha(0.3);
         },
 
         //
@@ -405,9 +401,6 @@ nytg.Chart = function() {
         totalLayout: function() {
             var that = this;
             this.force
-                // .gravity(-0.01)
-                // .charge(that.defaultCharge)
-                // .friction(0.9)
                 .on("tick", function(d) {
                     that.circle
                         .each(that.totalSort(this.alpha()))
@@ -418,8 +411,9 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         })
-                });
-            // .start();
+                })
+                .alpha(0.1)
+                .restart();
         },
 
         //
@@ -428,9 +422,6 @@ nytg.Chart = function() {
         mandatoryLayout: function() {
             var that = this;
             this.force
-                // .gravity(0)
-                // .friction(0.9)
-                // .charge(that.defaultCharge)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.mandatorySort(this.alpha()))
@@ -441,8 +432,9 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                });
-            // .start();
+                })
+                .alpha(0.25)
+                .restart();
         },
 
         //
@@ -451,9 +443,6 @@ nytg.Chart = function() {
         discretionaryLayout: function() {
             var that = this;
             this.force
-                // .gravity(0)
-                // .charge(0)
-                // .friction(0.2)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.discretionarySort(this.alpha()))
@@ -463,8 +452,9 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                });
-            // .start();
+                })
+                .alpha(0.1)
+                .restart();
         },
 
         //
@@ -473,9 +463,6 @@ nytg.Chart = function() {
         departmentLayout: function() {
             var that = this;
             this.force
-                // .gravity(0)
-                // .charge(1)
-                // .friction(0)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.staticDepartment(this.alpha()))
@@ -485,8 +472,9 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return d.y;
                         });
-                });
-            // .start();
+                })
+                .alpha(0.1)
+                .restart();
         },
 
         //
@@ -495,9 +483,6 @@ nytg.Chart = function() {
         comparisonLayout: function() {
             var that = this;
             this.force
-                // .gravity(0)
-                // .charge(that.defaultCharge)
-                // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
                         .each(that.comparisonSort(this.alpha()))
@@ -507,8 +492,9 @@ nytg.Chart = function() {
                         .attr("cy", function(d) {
                             return isNaN(d.y) ? 0 : d.y;
                         });
-                });
-            // .start();
+                })
+                .alpha(1)
+                .restart();
         },
 
         // ----------------------------------------------------------------------------------------
@@ -677,7 +663,7 @@ nytg.Chart = function() {
         //
         //
         //
-/*
+// /*
         collide: function(alpha) {
             var that = this;
             var padding = 6;
@@ -709,6 +695,6 @@ nytg.Chart = function() {
                 });
             };
         }
-*/
+// */
     }
 };

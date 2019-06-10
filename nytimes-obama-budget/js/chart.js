@@ -23,15 +23,13 @@ nytg.Chart = function() {
 
         //d3 settings
         defaultGravity: 0.1,
-/*
         defaultCharge: function(d) {
             if (d.value < 0) {
-                return 0;
+                return 0
             } else {
-                return Math.pow(d.radius, 2.0) / 8;
+                return -Math.pow(d.radius, 2.0) / 8
             };
         },
-*/
         links: [],
         nodes: [],
         positiveNodes: [],
@@ -99,9 +97,6 @@ nytg.Chart = function() {
         categoryPositionLookup: {},
         categoriesList: [],
 
-        //
-        //
-        //
         init: function() {
             var that = this;
 
@@ -359,48 +354,25 @@ nytg.Chart = function() {
                 });
         },
 
-        //
-        //
-        //
-/*
-        getCirclePositions: function() {
-            var that = this
-            var circlePositions = {};
-            this.circle.each(function(d) {
-                circlePositions[d.sid] = {
-                    x: Math.round(d.x),
-                    y: Math.round(d.y)
-                }
-            })
-            return JSON.stringify(circlePositions)
-        },
-*/
-        //
-        //
-        //
         start: function() {
             var that = this;
 
-            const forceX = d3.forceX(this.width / 2.5).strength(0.002);
-            const forceY = d3.forceY(this.height / 4.5).strength(0.002);
-
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
-                .force('forceX', forceX)
-                .force('forceY', forceY)
-                .force('charge', d3.forceManyBody().strength(2))
-                .force('collision', d3.forceCollide().radius((d) => {
-                    return d.radius;
-                }))
-                .alpha(0.3);
+                .alpha(0);
         },
 
-        //
-        //
-        //
         totalLayout: function() {
             var that = this;
             this.force
+                .force('forceX', d3.forceX(this.width / 2).strength(0.05))
+                .force('forceY', d3.forceY(this.height / 4.5).strength(0.05))
+                // .force('charge', d3.forceManyBody().strength(0.006))
+                // .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
+                .force('radial', d3.forceRadial(200))
+                .force('collision', d3.forceCollide().radius((d) => {
+                    return d.radius;
+                }))
                 .on("tick", function(d) {
                     that.circle
                         .each(that.totalSort(this.alpha()))
@@ -412,16 +384,21 @@ nytg.Chart = function() {
                             return d.y;
                         })
                 })
-                .alpha(0.1)
+                .alpha(0.2)
                 .restart();
         },
 
-        //
-        //
-        //
         mandatoryLayout: function() {
             var that = this;
             this.force
+                .force('forceX', d3.forceX(this.width / 2).strength(-0.05))
+                .force('forceY', d3.forceY(this.height / 4.5).strength(-0.05))
+                // .force('charge', d3.forceManyBody().strength(-0.006))
+                .force('charge', d3.forceManyBody().strength((d) => that.defaultCharge(d)))
+                .force('radial', d3.forceRadial(200))
+                .force('collision', d3.forceCollide().radius((d) => {
+                    return d.radius;
+                }))
                 .on("tick", function(e) {
                     that.circle
                         .each(that.mandatorySort(this.alpha()))
@@ -433,13 +410,10 @@ nytg.Chart = function() {
                             return d.y;
                         });
                 })
-                .alpha(0.25)
+                .alpha(0.2)
                 .restart();
         },
 
-        //
-        //
-        //
         discretionaryLayout: function() {
             var that = this;
             this.force
@@ -457,9 +431,6 @@ nytg.Chart = function() {
                 .restart();
         },
 
-        //
-        //
-        //
         departmentLayout: function() {
             var that = this;
             this.force
@@ -477,9 +448,6 @@ nytg.Chart = function() {
                 .restart();
         },
 
-        //
-        //
-        //
         comparisonLayout: function() {
             var that = this;
             this.force
@@ -493,7 +461,7 @@ nytg.Chart = function() {
                             return isNaN(d.y) ? 0 : d.y;
                         });
                 })
-                .alpha(1)
+                .alpha(0.1)
                 .restart();
         },
 
@@ -501,9 +469,14 @@ nytg.Chart = function() {
         // FORCES
         // ----------------------------------------------------------------------------------------
 
-        //
-        //
-        //
+        buoyancy: function(alpha) {
+            var that = this;
+            return function(d) {
+                var targetY = that.centerY - (d.changeCategory / 3) * that.boundingRadius;
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 100;
+            };
+        },
+
         totalSort: function(alpha) {
             var that = this;
             return function(d) {
@@ -518,24 +491,11 @@ nytg.Chart = function() {
                     }
                 }
 
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity + 0.02) * alpha
-                d.x = d.x + (targetX - d.x) * (that.defaultGravity + 0.02) * alpha
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity + 0.02) * alpha;
+                d.x = d.x + (targetX - d.x) * (that.defaultGravity + 0.02) * alpha;
             };
         },
 
-        //
-        //
-        //
-        buoyancy: function(alpha) {
-            var that = this;
-            return function(d) {
-                var targetY = that.centerY - (d.changeCategory / 3) * that.boundingRadius
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 100;
-            };
-        },
-        //
-        //
-        //
         mandatorySort: function(alpha) {
             var that = this;
             return function(d) {
@@ -544,29 +504,26 @@ nytg.Chart = function() {
 
                 if (d.isNegative) {
                     if (d.changeCategory > 0) {
-                        d.x = -200
+                        d.x = -200;
                     } else {
-                        d.x = 1100
+                        d.x = 1100;
                     }
                     return;
                 }
 
                 if (d.discretion === that.DISCRETIONARY) {
-                    targetX = 550
+                    targetX = 550;
                 } else if ((d.discretion === that.MANDATORY) || (d.discretion === that.NET_INTEREST)) {
-                    targetX = 400
+                    targetX = 400;
                 } else {
-                    targetX = 900
+                    targetX = 900;
                 };
 
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 1.1
-                d.x = d.x + (targetX - d.x) * (that.defaultGravity) * alpha * 1.1
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 1.1;
+                d.x = d.x + (targetX - d.x) * (that.defaultGravity) * alpha * 1.1;
             };
         },
 
-        //
-        //
-        //
         discretionarySort: function(alpha) {
             var that = this;
             return function(d) {
@@ -575,9 +532,9 @@ nytg.Chart = function() {
 
                 if (d.isNegative) {
                     if (d.changeCategory > 0) {
-                        d.x = -200
+                        d.x = -200;
                     } else {
-                        d.x = 1100
+                        d.x = 1100;
                     }
                     return;
                 }
@@ -586,30 +543,27 @@ nytg.Chart = function() {
                     targetY = that.changeScale(d.change);
                     targetX = 100 + that.groupScale(d.group) * (that.width - 120);
                     if (isNaN(targetY)) {
-                        targetY = that.centerY
+                        targetY = that.centerY;
                     };
                     if (targetY > (that.height - 80)) {
-                        targetY = that.height - 80
+                        targetY = that.height - 80;
                     };
                     if (targetY < 80) {
-                        targetY = 80
+                        targetY = 80;
                     };
 
                 } else if ((d.discretion === "Mandatory") || (d.discretion === "Net interest")) {
                     targetX = -300 + Math.random() * 100;
                     targetY = d.y;
                 } else {
-                    targetX = 0
+                    targetX = 0;
                 };
 
-                d.y = d.y + (targetY - d.y) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.2
-                d.x = d.x + (targetX - d.x) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.1
+                d.y = d.y + (targetY - d.y) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.2;
+                d.x = d.x + (targetX - d.x) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.1;
             };
         },
 
-        //
-        //
-        //
         departmentSort: function(alpha) {
             var that = this;
             return function(d) {
@@ -621,15 +575,12 @@ nytg.Chart = function() {
                     targetX = that.categoryPositionLookup[d.group].x;
                 } else {};
 
-                var r = Math.max(5, d.radius)
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 0.5 * r
-                d.x = d.x + (targetX - d.x) * (that.defaultGravity) * alpha * 0.5 * r
+                var r = Math.max(5, d.radius);
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 0.5 * r;
+                d.x = d.x + (targetX - d.x) * (that.defaultGravity) * alpha * 0.5 * r;
             };
         },
 
-        //
-        //
-        //
         staticDepartment: function(alpha) {
             var that = this;
             return function(d) {
@@ -641,60 +592,9 @@ nytg.Chart = function() {
                     targetY = d.positions.department.y;
                 };
 
-                d.y += (targetY - d.y) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.6
-                d.x += (targetX - d.x) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.4
-            };
-        },
-
-        //
-        //
-        //
-        comparisonSort: function(alpha) {
-            var that = this;
-            return function(d) {
-                var targetY = that.height / 2;
-                var targetX = 650;
-
-                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha
-                d.x = d.x + (targetX - d.x) * (that.defaultGravity) * alpha
-            };
-        },
-
-        //
-        //
-        //
-// /*
-        collide: function(alpha) {
-            var that = this;
-            var padding = 6;
-            var quadtree = d3.geom.quadtree(this.nodes);
-            return function(d) {
-                var r = d.radius + that.maxRadius + padding,
-                    nx1 = d.x - r,
-                    nx2 = d.x + r,
-                    ny1 = d.y - r,
-                    ny2 = d.y + r;
-                quadtree.visit(function(quad, x1, y1, x2, y2) {
-                    if (quad.point && (quad.point !== d) && (d.group === quad.point.group)) {
-                        var x = d.x - quad.point.x,
-                            y = d.y - quad.point.y,
-                            l = Math.sqrt(x * x + y * y),
-                            r = d.radius + quad.point.radius;
-                        if (l < r) {
-                            l = (l - r) / l * alpha;
-                            d.x -= x *= l;
-                            d.y -= y *= l;
-                            quad.point.x += x;
-                            quad.point.y += y;
-                        }
-                    }
-                    return x1 > nx2 ||
-                        x2 < nx1 ||
-                        y1 > ny2 ||
-                        y2 < ny1;
-                });
+                d.y += (targetY - d.y) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.6;
+                d.x += (targetX - d.x) * Math.sin(Math.PI * (1 - alpha * 10)) * 0.4;
             };
         }
-// */
     }
 };

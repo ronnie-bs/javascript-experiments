@@ -45,7 +45,6 @@ nytg.ready = function() {
                 'height': 550
             });
         } else if (tabIndex === 1) {
-            console.log('tabIndex === 1');
             nytg.c.mandatoryLayout();
             this.currentOverlay = $j("#nytg-mandatoryOverlay");
             this.currentOverlay.delay(300).fadeIn(500);

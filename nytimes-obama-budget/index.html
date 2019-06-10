@@ -15,14 +15,20 @@
         jQuery.noConflict();
         var $j = jQuery;
 
-        $j.getJSON('data/budget.json', function(data) {
-            nytg.budget_array_data = data;
+        const filteredDepartments = [
+            // "State",
+        ];
 
-            $j.getJSON('data/category_list.json', function(data) {
-                nytg.category_list = data;
+        $j.getJSON('data/budget.json', function(budgetData) {
+            nytg.budget_array_data = budgetData.filter((datum) => {
+                return filteredDepartments.length > 0 ? filteredDepartments.includes(datum.department) : true;
+            });
 
-                $j.getJSON('data/category.json', function(data) {
-                    nytg.category_data = data;
+            $j.getJSON('data/category_list.json', function(categoryListData) {
+                nytg.category_list = categoryListData;
+
+                $j.getJSON('data/category.json', function(categoryData) {
+                    nytg.category_data = categoryData;
 
                     $j.getScript('js/nytg.js', function() {
                         $j.getScript('js/chart.js', function() {

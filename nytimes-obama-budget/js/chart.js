@@ -384,18 +384,19 @@ nytg.Chart = function() {
             //     .nodes(this.nodes)
             //     .size([this.width, this.height]);
 
-            const forceX = d3.forceX(this.width / 2.5).strength(0.006);
-            const forceY = d3.forceY(this.height /4.5).strength(0.006);
+            // const forceX = d3.forceX(this.width / 2.5).strength(0.006);
+            // const forceY = d3.forceY(this.height /4.5).strength(0.006);
+            const forceX = d3.forceX(this.width / 2).strength(0.05);
+            const forceY = d3.forceY(this.height / 4.5).strength(0.05);
+
             this.force = d3.forceSimulation()
                 .nodes(this.nodes)
                 .force('forceX', forceX)
                 .force('forceY', forceY)
-                // .force('charge', this.defaultCharge)
-                .force('charge', d3.forceManyBody().strength(0.5))
+                .force('charge', d3.forceManyBody().strength(5))
                 .force('collision', d3.forceCollide().radius(function(d) {
-                    return d.radius;
+                    return d.radius / 1.3;
                 }));
-            // .force('friction', 0.9);
         },
 
         //
@@ -409,8 +410,8 @@ nytg.Chart = function() {
                 // .friction(0.9)
                 .on("tick", function(d) {
                     that.circle
-                        // .each(that.totalSort(this.alpha))
-                        // .each(that.buoyancy(this.alpha))
+                        .each(that.totalSort(this.alpha()))
+                        .each(that.buoyancy(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -432,8 +433,8 @@ nytg.Chart = function() {
                 // .charge(that.defaultCharge)
                 .on("tick", function(e) {
                     that.circle
-                        // .each(that.mandatorySort(e.alpha))
-                        // .each(that.buoyancy(e.alpha))
+                        .each(that.mandatorySort(this.alpha()))
+                        .each(that.buoyancy(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -455,7 +456,7 @@ nytg.Chart = function() {
                 // .friction(0.2)
                 .on("tick", function(e) {
                     that.circle
-                        // .each(that.discretionarySort(e.alpha))
+                        .each(that.discretionarySort(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -477,7 +478,7 @@ nytg.Chart = function() {
                 // .friction(0)
                 .on("tick", function(e) {
                     that.circle
-                        // .each(that.staticDepartment(e.alpha))
+                        .each(that.staticDepartment(this.alpha()))
                         .attr("cx", function(d) {
                             return d.x;
                         })
@@ -499,7 +500,7 @@ nytg.Chart = function() {
                 // .friction(0.9)
                 .on("tick", function(e) {
                     that.circle
-                        // .each(that.comparisonSort(e.alpha))
+                        .each(that.comparisonSort(this.alpha()))
                         .attr("cx", function(d) {
                             return isNaN(d.x) ? 0 : d.x;
                         })
@@ -518,7 +519,6 @@ nytg.Chart = function() {
         //
         //
         totalSort: function(alpha) {
-            console.log('totalSort');
             var that = this;
             return function(d) {
                 var targetY = that.centerY;
@@ -532,11 +532,8 @@ nytg.Chart = function() {
                     }
                 }
 
-                var dy = isNaN(d.y) ? 0 : d.y;
-                var dx = isNaN(d.x) ? 0 : d.x;
-
-                d.y = dy + (targetY - dy) * (that.defaultGravity + 0.02) * alpha
-                d.x = dx + (targetX - dx) * (that.defaultGravity + 0.02) * alpha
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity + 0.02) * alpha
+                d.x = d.x + (targetX - d.x) * (that.defaultGravity + 0.02) * alpha
             };
         },
 
@@ -547,9 +544,7 @@ nytg.Chart = function() {
             var that = this;
             return function(d) {
                 var targetY = that.centerY - (d.changeCategory / 3) * that.boundingRadius
-                var dy = isNaN(d.y) ? 0 : d.y;
-                // d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * alpha * alpha * 100;
-                d.y = dy + (targetY - dy) * (that.defaultGravity) * alpha * 100;
+                d.y = d.y + (targetY - d.y) * (that.defaultGravity) * alpha * 100;
             };
         },
         //

@@ -10,16 +10,16 @@ nytg.filename = function(index) {
     return tabs[index];
 }
 
-$j("#save").click(function() {
-    $j.ajax({
-        type: "POST",
-        url: "/save",
-        data: {
-            'filename': nytg.filename(nytg.mainNav.currentIndex),
-            'contents': nytg.c.getCirclePositions()
-        }
-    });
-})
+// $j("#save").click(function() {
+//     $j.ajax({
+//         type: "POST",
+//         url: "/save",
+//         data: {
+//             'filename': nytg.filename(nytg.mainNav.currentIndex),
+//             'contents': nytg.c.getCirclePositions()
+//         }
+//     });
+// })
 
 nytg.ready = function() {
     var that = this;
@@ -45,6 +45,7 @@ nytg.ready = function() {
                 'height': 550
             });
         } else if (tabIndex === 1) {
+            console.log('tabIndex === 1');
             nytg.c.mandatoryLayout();
             this.currentOverlay = $j("#nytg-mandatoryOverlay");
             this.currentOverlay.delay(300).fadeIn(500);

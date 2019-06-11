@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "d3": "4.13.0",
+    "d3-force-cluster": "^0.1.2",
     "jquery": "^3.4.1"
   },
   "devDependencies": {

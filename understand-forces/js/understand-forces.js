@@ -28,6 +28,9 @@ var nodes = [
     { name: 'Z', customx: 770, customy: 40, customr: 64,  group: 'C' },
 ];
 
+var clusters = null;
+var that = this;
+
 var svg = d3.select('#chart').append('svg:svg')
     .attr('width', this.width)
     .attr('height', this.height);
@@ -36,7 +39,6 @@ var gOuter = svg.append('g')
     .attr('transform', 'translate(' + this.width / 2 + ', ' + this.height / 2 + ')');
 
 function update(data) {
-    var that = this;
     var u = gOuter.selectAll('g').data(data);
     u.exit().remove();
     var e = u.enter().merge(u);
@@ -47,33 +49,25 @@ function update(data) {
         .style('fill', (d) => that.getGroupColor(d));
 
     g.append('svg:text')
-        .text((d) => d.name);
-
-    // if (nodes.length > 0) {
-    //     popNode();
-    // } else {
-    //     console.log('Kalaash');
-    // }
+        .text((d) => d.name + '(' + d.group + ')');
 }
 
 function ticked() {
     var g = svg.selectAll('.circle-text-group');
+    // g.each((d) => {
+    //     that.clusteringSort(g.data(), d, this.alpha());
+    // });
+
+    if (this.clusters === null) {
+        this.initializeCluster(g.data());
+    }
+
     g.selectAll('circle')
         .attr('cx', (d) => d.x)
         .attr('cy', (d) => d.y);
     g.selectAll('text')
-        .attr('fill', '#FFF')
-        .attr('transform', (d) => 'translate(' + (d.x - 6) + ', ' + (d.y + 4) + ')');
-}
-
-function popNode() {
-    setTimeout(() => {
-        nodes.pop();
-        update(nodes);
-    
-        simulation.alpha(1);
-        simulation.restart();
-    }, 3000);   
+        .attr('fill', '#000')
+        .attr('transform', (d) => 'translate(' + (d.x - 15) + ', ' + (d.y + 4) + ')');
 }
 
 function getGroupColor(d) {
@@ -88,6 +82,24 @@ function getGroupColor(d) {
     return retVal;
 }
 
+function getClusterNode(data, name) {
+    return data.find((node) => node.name === name);
+}
+
+function initializeCluster(data) {
+    this.clusters = {};
+    data.forEach((d) => {
+        if (!this.clusters[d.group] || (this.clusters[d.group] && this.clusters[d.group].customr < d.customr)) {
+            // console.log('node', node);
+            this.clusters[d.group] = d;
+        }
+    });
+
+    console.log('this.clusters', this.clusters);
+}
+
+// this.initializeCluster(this.nodes);
+
 var simulation = d3.forceSimulation(nodes)
     // .force('charge', d3.forceManyBody().strength(10))
     // .force('center', d3.forceCenter(width / 2, height / 2))
@@ -95,6 +107,11 @@ var simulation = d3.forceSimulation(nodes)
     // .force('y', d3.forceY(height / 2).strength(0.02))
     .force("charge", d3.forceCollide((d) => d.customr).strength(0.2))
     .force('radial', d3.forceRadial((d) => 200))
+    .force('cluster', d3.forceCluster()
+        .centers((d) => that.clusters[d.group])
+        .strength(0.2)
+        .centerInertia(0.1)
+    )
     .alpha(0.25)
     .on('tick', ticked);
 

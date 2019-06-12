@@ -1,12 +1,16 @@
+const MAX_LABEL_LENGTH = 25;
+const TOOLTIP_X_OFFSET = 280;
+const TOOLTIP_Y_OFFSET = 30;
+
 $.getJSON("data/co-occurrence-matrix.json", function(data) {
     var margin = {
-            top: 80,
+            top: 200,
             right: 0,
             bottom: 10,
-            left: 80
+            left: 200
         },
-        width = 720,
-        height = 720;
+        width = 1000,
+        height = 1000;
 
     var x = d3.scaleBand().range([0, width]),
         z = d3.scaleLinear().domain([0, 4]).clamp(true),
@@ -85,8 +89,10 @@ $.getJSON("data/co-occurrence-matrix.json", function(data) {
         .attr("dy", ".32em")
         .attr("text-anchor", "end")
         .text(function(d, i) {
-            return nodes[i].name;
-        });
+            return truncLabel(nodes[i].name);
+        })
+        .on('mouseover', showTooltip)
+        .on('mouseout', hideTooltip);
 
     var column = svg.selectAll(".column")
         .data(matrix)
@@ -105,8 +111,29 @@ $.getJSON("data/co-occurrence-matrix.json", function(data) {
         .attr("dy", ".32em")
         .attr("text-anchor", "start")
         .text(function(d, i) {
-            return nodes[i].name;
-        });
+            return truncLabel(nodes[i].name);
+        })
+        .on('mouseover', showTooltip)
+        .on('mouseout', hideTooltip);
+
+    function showTooltip(d, i) {
+        const content = nodes[i].name;
+        if (content) {
+            const xpos = d3.event.pageX - TOOLTIP_X_OFFSET;
+            const ypos = d3.event.pageY - TOOLTIP_Y_OFFSET;
+            d3.select('#tooltip').style('top', ypos + 'px')
+                .style('left', xpos + 'px').style('display', 'block');
+            d3.select('#tooltip .content').html(content);
+        }
+    }
+
+    function hideTooltip(d, i) {
+        d3.select('#tooltip').style('display', 'none');
+    }
+
+    function truncLabel(label) {
+        return label.length > MAX_LABEL_LENGTH ? label.slice(0, MAX_LABEL_LENGTH) + '...' : label;
+    }
 
     function row(row) {
         var cell = d3.select(this).selectAll(".cell")
@@ -144,7 +171,7 @@ $.getJSON("data/co-occurrence-matrix.json", function(data) {
     }
 
     d3.select("#order").on("change", function() {
-        clearTimeout(timeout);
+        // clearTimeout(timeout);
         order(this.value);
     });
 

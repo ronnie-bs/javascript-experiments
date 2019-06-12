@@ -24,8 +24,8 @@
                 return filteredDepartments.length > 0 ? filteredDepartments.includes(datum.department) : true;
             });
 
-            $j.getJSON('data/category_list.json', function(categoryListData) {
-                nytg.category_list = categoryListData;
+            // $j.getJSON('data/category_list.json', function(categoryListData) {
+            //     nytg.category_list = categoryListData;
 
                 $j.getJSON('data/category.json', function(categoryData) {
                     nytg.category_data = categoryData;
@@ -38,7 +38,7 @@
                         });
                     });
                 });
-            });
+            // });
         });
     </script>
 </head>

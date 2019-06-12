@@ -10,17 +10,6 @@ nytg.filename = function(index) {
     return tabs[index];
 }
 
-// $j("#save").click(function() {
-//     $j.ajax({
-//         type: "POST",
-//         url: "/save",
-//         data: {
-//             'filename': nytg.filename(nytg.mainNav.currentIndex),
-//             'contents': nytg.c.getCirclePositions()
-//         }
-//     });
-// })
-
 nytg.ready = function() {
     var that = this;
     nytg.c = new nytg.Chart();

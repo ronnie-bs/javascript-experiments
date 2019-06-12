@@ -1,30 +1,27 @@
-var margin = {
-        top: 80,
-        right: 0,
-        bottom: 10,
-        left: 80
-    },
-    width = 720,
-    height = 720;
+$.getJSON("data/co-occurrence-matrix.json", function(data) {
+    var margin = {
+            top: 80,
+            right: 0,
+            bottom: 10,
+            left: 80
+        },
+        width = 720,
+        height = 720;
 
-var x = d3.scaleBand().range([0, width]),
-    z = d3.scaleLinear().domain([0, 4]).clamp(true),
-    c = d3.scaleOrdinal(d3.schemeCategory10);
+    var x = d3.scaleBand().range([0, width]),
+        z = d3.scaleLinear().domain([0, 4]).clamp(true),
+        c = d3.scaleOrdinal(d3.schemeCategory10);
 
-console.log('x', x);
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .style("margin-left", -margin.left + "px")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svg = d3.select("#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .style("margin-left", -margin.left + "px")
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
-d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
     var matrix = [],
-        nodes = miserables.nodes,
-        n = nodes.length;
+    nodes = data.nodes,
+    n = nodes.length;
 
     // Compute index per node.
     nodes.forEach(function(node, i) {
@@ -40,7 +37,7 @@ d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
     });
 
     // Convert links to matrix; count character occurrences.
-    miserables.links.forEach(function(link) {
+    data.links.forEach(function(link) {
         matrix[link.source][link.target].z += link.value;
         matrix[link.target][link.source].z += link.value;
         matrix[link.source][link.source].z += link.value;
@@ -180,8 +177,9 @@ d3.json("/data/co-occurrence-matrix.json").then((miserables) => {
             });
     }
 
-    var timeout = setTimeout(function() {
-        order("group");
-        d3.select("#order").property("selectedIndex", 2).node().focus();
-    }, 5000);
+    // var timeout = setTimeout(function() {
+    //     order("group");
+    //     d3.select("#order").property("selectedIndex", 2).node().focus();
+    // }, 5000);
+    order("group");
 });

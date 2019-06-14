@@ -151,7 +151,7 @@ $.getJSON("data/co-occurrence-matrix.json", function(data) {
                 return z(d.z);
             })
             .style("fill", function(d) {
-                return nodes[d.x].group == nodes[d.y].group ? c(nodes[d.x].group) : null;
+                return nodes[d.x].group == nodes[d.y].group ? c(nodes[d.x].group) : 'transparent';
             })
             .on("mouseover", mouseover)
             .on("mouseout", mouseout);
@@ -208,5 +208,5 @@ $.getJSON("data/co-occurrence-matrix.json", function(data) {
     //     order("group");
     //     d3.select("#order").property("selectedIndex", 2).node().focus();
     // }, 5000);
-    order("group");
+    order("name");
 });
